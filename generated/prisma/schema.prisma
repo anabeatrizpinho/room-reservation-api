@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(100)
+  email    String @unique @db.VarChar(150)
+  password String @db.VarChar(255)
+  role     Role   @default(USER)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  reservations Reservation[]
+  tokens       Token[]
+
+  @@map("users")
+}
+
+model MeetingRoom {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(100)
+  capacity Int
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  reservations Reservation[]
+
+  @@map("meeting_rooms")
+}
+
+model Reservation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  room MeetingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("reservations")
+}
+
+model Token {
+  id      Int    @id @default(autoincrement())
+  content String @unique
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("tokens")
+}
