@@ -24,7 +24,6 @@ model User {
   deletedAt    DateTime?  @map("deleted_at")
 
   reservations Reservation[]
-  tokens       Token[]
 
   @@map("users")
 }
@@ -60,13 +59,3 @@ model Reservation {
   @@map("reservations")
 }
 
-model Token {
-  id           Int        @id @default(autoincrement())
-  content      String     @unique
-  userId       Int
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  createdAt    DateTime   @default(now()) @map("created_at")
-
-  @@map("tokens")
-}
