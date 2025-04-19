@@ -4,7 +4,9 @@ import {
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common';
+import { InvalidCredentialsError } from 'src/auth/errors/invalidCredentials.error';
 import { InvalidMeetingRoomIdError } from 'src/meeting_rooms/errors/invalidMeetingRoomId.error';
 import { MeetingRoomCreationFailed } from 'src/meeting_rooms/errors/meetingRoomCreationFailed.error';
 import { MeetingRoomDeleteFailed } from 'src/meeting_rooms/errors/meetingRoomDeleteFailed.error';
@@ -55,6 +57,9 @@ export class ErrorHandlerService {
 			e instanceof ReservationNotFoundError
 		)
 			throw new NotFoundException(e.message);
+
+		if (e instanceof InvalidCredentialsError)
+			throw new UnauthorizedException(e.message);
 
 		throw new InternalServerErrorException();
 	}
