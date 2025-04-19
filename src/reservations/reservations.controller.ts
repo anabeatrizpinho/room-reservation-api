@@ -7,8 +7,10 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
+	UseGuards,
 } from '@nestjs/common';
 import { Reservation } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ErrorHandlerService } from 'src/common/errors/errors.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateReservationDto } from './dto/body/create-reservation.dto';
@@ -16,6 +18,7 @@ import { UpdateReservationDto } from './dto/body/update-reservation.dto';
 import { ReservationDto } from './dto/expose/reservation.expose.dto';
 import { ReservationsRepository } from './reservations.repository';
 
+@UseGuards(JwtAuthGuard)
 @Serialize(ReservationDto)
 @Controller('reservations')
 export class ReservationsController {

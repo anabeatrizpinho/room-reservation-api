@@ -7,8 +7,10 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
+	UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ErrorHandlerService } from 'src/common/errors/errors.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDto } from './dto/body/create-user.body.dto';
@@ -33,6 +35,7 @@ export class UsersController {
 		}
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Get()
 	async findAll(): Promise<User[]> {
 		try {
@@ -42,6 +45,7 @@ export class UsersController {
 		}
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Get(':id')
 	async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
 		try {
@@ -51,6 +55,7 @@ export class UsersController {
 		}
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Patch(':id')
 	async update(
 		@Param('id', ParseIntPipe) id: number,
@@ -62,7 +67,7 @@ export class UsersController {
 			this.errorHandlerService.handleError(e);
 		}
 	}
-
+	@UseGuards(JwtAuthGuard)
 	@Delete(':id')
 	async remove(@Param('id', ParseIntPipe) id: number): Promise<User> {
 		try {

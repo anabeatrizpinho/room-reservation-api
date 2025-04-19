@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
 import { EmailFoundError } from './errors/emailFound.error';
 import { InvalidUserIdError } from './errors/invalidUserId.error';
@@ -25,7 +26,10 @@ export class UsersService implements UsersRepository {
 		if (userWithUniqueEmail) throw new EmailFoundError();
 
 		try {
-			return await this.prisma.user.create({ data });
+			const hashedPassword = await bcrypt.hash(data.password, 10);
+			return await this.prisma.user.create({
+				data: { ...data, password: hashedPassword },
+			});
 		} catch (_e: any) {
 			throw new UserCreationFailed();
 		}

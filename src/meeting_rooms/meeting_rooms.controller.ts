@@ -7,8 +7,10 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
+	UseGuards,
 } from '@nestjs/common';
 import { MeetingRoom } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ErrorHandlerService } from 'src/common/errors/errors.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateMeetingRoomDto } from './dto/body/create-meeting_room.body.dto';
@@ -16,6 +18,7 @@ import { UpdateMeetingRoomDto } from './dto/body/update-meeting_room.body.dto';
 import { MeetingRoomDto } from './dto/expose/meeting_room.expose.dto';
 import { MeetingRoomsRepository } from './meeting_rooms.repository';
 
+@UseGuards(JwtAuthGuard)
 @Serialize(MeetingRoomDto)
 @Controller('meeting-rooms')
 export class MeetingRoomsController {
